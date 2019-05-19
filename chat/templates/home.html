@@ -1,0 +1,145 @@
+{% load staticfiles %}
+<html>
+  <head>
+    <title>Django Dialogflow</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}"/>
+  </head>
+  <body>
+
+    <div class="container">
+      <div class="page-header text-center">
+        <h1>Dialogflow</h1>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-6 col-xs-offset-3">
+          <ul class="list-group js-chat-log">
+          </ul>            
+
+          <div class="input-group input-group-lg">
+            <input type="text" class="form-control js-text" placeholder="Type something to begin..."/>
+            <span class="input-group-btn">   
+              <button class="btn btn-primary js-say">Submit</button>
+            </span>
+          </div>
+          <input type="file" class="custom-file-input" name="file" id="inputGroupFile01"
+                    aria-describedby="inputGroupFileAddon01">
+
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'js/jquery.js' %}"></script>
+    <script src="{% static 'js/js.cookie.js' %}"></script>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+    <script>
+      var $chatlog = $('.js-chat-log');
+      var $input = $('.js-text');
+      
+      var $sayButton = $('.js-say');
+      var dialogflowUrl = '{% url "index" %}';
+      var csrftoken = Cookies.get('csrftoken');
+
+      function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+
+      $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        }
+      });
+
+      var file_length_bool = true;
+      // helper method to create the list of inputs and outputs to display on the web page to show the chat messages. 
+      function createRow(input) {
+        var $row = $('<li class="list-group-item"></li>');
+        var list = '<li class="list-group-item">'
+        file_length = document.getElementById('inputGroupFile01').files.length
+        if (file_length != 0 && file_length_bool == true){
+          filename = document.getElementById('inputGroupFile01').files[0].name
+          url_test = "https://storage.googleapis.com/as-testing-bucket/" + filename;
+          list +=  '<img src="'+url_test+'" height="100" width="80"/>' + "<br />"
+          file_length_bool = false;
+        }
+        else{
+          var k = input.split("\n")
+          for(i=0;i<k.length;i++) {
+             list += k[i]+"<br />"
+          }
+        }
+          list = list + "</li>"
+          $row.text(list);
+          $chatlog.append(list);
+      }
+
+      window.onload = createRow('<b><font size="4" face="Lucida Console">Chat with Dialogflow</font></b>');
+
+      function submitInput() {
+
+        var fileInput = document.getElementById('inputGroupFile01');
+        var file = fileInput.files[0];
+        // handle when the user input is text 
+        if (file == undefined){
+          console.log("No input file");
+          var inputData = {
+            'text': $input.val(),
+          }
+          // Display the user's input on the web page
+          createRow(inputData.text);
+          var dialogflowChatUrl = '{% url "chat-home" %}';
+          var $submit = $.ajax({
+            type: 'POST',
+            url: dialogflowChatUrl,
+            data: JSON.stringify(inputData),
+            contentType: 'application/json',
+          });
+        }
+        else{
+          // handle when input is a file
+          var formData = new FormData(file);
+          formData.append('file', file);
+          // Display the user's input file on the web page
+          createRow(formData);
+          console.log('Form Data is', formData)
+          var dialogflowChatUrl = '{% url "chat-home" %}';
+          var $submit = $.ajax({
+            type: 'POST',
+            url: dialogflowChatUrl,
+            data: formData,
+            contentType: false,
+            async:false,
+            processData: false,
+            enctype: 'multipart/form-data'
+          });
+        }
+
+        $submit.done(function(statement) {
+            createRow(statement);
+            // Clear the input field
+            $input.val('');
+        });
+
+        $submit.fail(function() {
+          // TODO: Handle errors
+          console.log('failed')
+        });
+      }
+
+      $sayButton.click(function() {
+        submitInput();
+      });
+
+      $input.keydown(function(event) {
+        // Submit the input when the enter button is pressed
+        if (event.keyCode == 13) {
+          submitInput();
+        }
+      });
+    </script>
+  </body>
+</html>

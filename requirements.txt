@@ -1,0 +1,8 @@
+Django==2.1.5
+PyMySQL==0.9.3
+dialogflow==0.5.1
+google-cloud-storage
+django-gcloud-storage
+google-api-core
+google.api_core
+gcloud
