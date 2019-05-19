@@ -92,6 +92,9 @@ gcloud sql instances describe [YOUR_INSTANCE_NAME]
 1. Inside chat folder, replace the AppointmentScheduler.json with your own credentials json file. 
 2. In views.py in chat folder, Change the GOOGLE_PROJECT_ID = **"<YOUR_PROJECT_ID>"** to your project ID
 
+### Dialogflow Agent set up
+1. Download the agent zip file and upload it into your dialogflow account to create an agent. 
+
 ### Build and run the app locally
 To run the Django app on your local computer, you'll need to set up a Python development environment, including Python, pip, and virtualenv. For instructions, refer to Setting Up a Python Development Environment for Google Cloud Platform.
 
