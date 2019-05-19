@@ -77,11 +77,9 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
     });
   }
   
-  // 
+  // function called when file_uplod intent is triggered
   function applyML(agent){
     const filename = agent.parameters.filename;
-    console.log("filename is: ", filename);
-
     // call vision API to detect text
     return callVisionApi(agent, bucketName, filename).then(result => {
             agent.add(`file is being processed ${result}`);
@@ -98,10 +96,9 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
 
 
 function addToBigQuery(agent, appointment_type) {
-    console.log("test");
     const date_bq = agent.parameters.date.split('T')[0];
     const time_bq = agent.parameters.time.split('T')[1].split('-')[0];
-    const projectId = 'as-testing-7e213'; /* TODO */
+    const projectId = '<YOUR GCP PROJECT ID>; /* TODO */
     const bigquery = new BIGQUERY({
       projectId: projectId
     });
@@ -109,8 +106,8 @@ function addToBigQuery(agent, appointment_type) {
     /**
     * TODO(developer): Uncomment the following lines before running the sample.
     */
-   const datasetId = "demo_dataset";
-   const tableId = "demo_table"; 
+   const datasetId = "<YOUR DATASET ID>";
+   const tableId = "<YOUR TABLE NAME>"; 
    const rows = [{date: date_bq, time: time_bq, type: appointment_type}];
   
    bigquery
@@ -135,17 +132,8 @@ function addToBigQuery(agent, appointment_type) {
 }
 
 async function callVisionApi(agent, bucketName, fileName){
-    // [START vision_text_detection_gcs]
-  // Imports the Google Cloud client libraries
   // Creates a client
-  
   const client = new vision.ImageAnnotatorClient();
-
-  /**
-   * TODO(developer): Uncomment the following lines before running the sample.
-   */
-  //bucketName = 'as-testing-bucket';
-
     try {
         // Performs text detection on the gcs file
         const [result] = await client.textDetection(`gs://${bucketName}/${fileName}`);
