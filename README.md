@@ -94,6 +94,8 @@ gcloud sql instances describe [YOUR_INSTANCE_NAME]
 
 ### Dialogflow Agent set up
 1. Download the agent zip file and upload it into your dialogflow account to create an agent. 
+2. Update fulfillment code in the inline editor with the fulfillment.js 
+3. Update package.json in the inline editor with the package.json in this repo
 
 ### Build and run the app locally
 To run the Django app on your local computer, you'll need to set up a Python development environment, including Python, pip, and virtualenv. For instructions, refer to Setting Up a Python Development Environment for Google Cloud Platform.
