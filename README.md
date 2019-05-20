@@ -174,6 +174,7 @@ If you are using a different dialogflow agent then try out your own training phr
 Licensed under [Apache2.0](./LICENSE.md)
 
 ### Disclaimer
+This is not an official Google product.
 This code is a sample, should not be used for any potential production workloads.
 
 ### Terms
