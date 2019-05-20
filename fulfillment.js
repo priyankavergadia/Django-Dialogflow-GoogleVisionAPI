@@ -72,7 +72,7 @@ exports.dialogflowFirebaseFulfillment = functions.https.onRequest((request, resp
   function applyML(agent){
     const filename = agent.parameters.filename;
     // call vision API to detect text
-    return callVisionApi(agent, bucketName, filename).then(result => {
+    return callVisionApi(bucketName, filename).then(result => {
             agent.add(`file is being processed ${result}`);
         }).catch((error)=> {
             agent.add(`error occured at apply ml function`  + error);
@@ -122,7 +122,7 @@ function addToBigQuery(agent, appointment_type) {
   agent.add(`Added ${date_bq} and ${time_bq} into the table`);
 }
 
-async function callVisionApi(agent, bucketName, fileName){
+async function callVisionApi(bucketName, fileName){
   // Creates a client
   const client = new vision.ImageAnnotatorClient();
     try {
