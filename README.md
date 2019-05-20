@@ -15,7 +15,7 @@ Clone the Django app
 
 Clone the repository to your local machine:
 ```js 
-git clone https://github.com/priyankavergadia/Django-Dialogflow-Appointment-Scheduler.git
+git clone https://github.com/priyankavergadia/Django-Dialogflow-GoogleVisionAPI.git
 ```
 cd into the directory that contains the code/.
 Alternatively, you can download the sample as a zip and extract it.
